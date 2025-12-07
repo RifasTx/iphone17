@@ -2,100 +2,179 @@
 <html>
 <head>
   <base target="_top">
-  <title>Verificador de Códigos Rasca y Gana</title>
+  <title>Rasca y Gana - Verificador de Códigos</title>
   <style>
+    /* ---------------------------------- */
+    /* 1. PALETA DE COLORES Y FUENTES */
+    /* ---------------------------------- */
+    :root {
+      --color-fondo-claro: #fcf4f7; /* Fondo Blanco-Rosado Pastel */
+      --color-pastel-rosa: #f7b5cf; /* Rosa Pastel principal */
+      --color-pastel-morado: #c5b4e3; /* Morado Pastel secundario */
+      --color-acento-rosa: #e91e63; /* Rosa Fuerte para letras */
+      --color-acento-azul: #00bcd4; /* Azul para contorno (stroke) */
+      --color-exito: #4caf50;
+      --color-alerta: #ff9800;
+      --color-error: #f44336;
+      --fuente-elegante: 'Playfair Display', serif; /* Fuente elegante */
+      --fuente-base: 'Arial', sans-serif;
+    }
+
+    /* Importar fuente elegante de Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+
+    /* ---------------------------------- */
+    /* 2. ESTILOS GENERALES Y LAYOUT */
+    /* ---------------------------------- */
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f9;
+      font-family: var(--fuente-base);
+      background: linear-gradient(135deg, var(--color-fondo-claro) 0%, var(--color-pastel-morado) 100%);
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       margin: 0;
+      padding: 20px;
     }
+
     .container {
       background-color: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
       width: 100%;
-      max-width: 400px;
+      max-width: 500px;
       text-align: center;
+      border: 5px solid var(--color-pastel-rosa);
     }
+
+    /* ---------------------------------- */
+    /* 3. ESTILO DEL TÍTULO GRANDE */
+    /* ---------------------------------- */
     h1 {
-      color: #007bff;
-      margin-bottom: 25px;
-      font-size: 1.5em;
+      font-family: var(--fuente-elegante);
+      font-size: 2.5em; /* Tamaño grande */
+      margin-bottom: 30px;
+      padding: 10px;
+      
+      /* Efecto de Letras Elegantes: Rosa Fuerte con Contorno Azul */
+      color: var(--color-acento-rosa);
+      text-shadow: 
+        -1px -1px 0 var(--color-acento-azul),  
+         1px -1px 0 var(--color-acento-azul),
+        -1px  1px 0 var(--color-acento-azul),
+         1px  1px 0 var(--color-acento-azul);
+      
+      /* Para navegadores más nuevos: */
+      -webkit-text-stroke: 1px var(--color-acento-azul);
+      color: var(--color-acento-rosa); 
     }
+    
+    h2 {
+      color: #333;
+      font-family: var(--fuente-base);
+      font-size: 1.2em;
+      margin-bottom: 20px;
+    }
+
+    /* ---------------------------------- */
+    /* 4. FORMULARIO Y BOTONES */
+    /* ---------------------------------- */
     input[type="text"] {
       width: 100%;
-      padding: 12px;
-      margin-bottom: 20px;
-      border: 2px solid #ccc;
-      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 25px;
+      border: 3px solid var(--color-pastel-morado);
+      border-radius: 8px;
       box-sizing: border-box;
-      font-size: 1.1em;
+      font-size: 1.2em;
       text-transform: uppercase;
       text-align: center;
+      transition: border-color 0.3s;
     }
+    input[type="text"]:focus {
+      border-color: var(--color-acento-rosa);
+      outline: none;
+    }
+
     button {
-      background-color: #28a745;
+      background-color: var(--color-pastel-rosa);
       color: white;
-      padding: 12px 20px;
+      font-weight: bold;
+      padding: 15px 25px;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 1.1em;
+      font-size: 1.2em;
       width: 100%;
-      transition: background-color 0.3s;
+      transition: background-color 0.3s, transform 0.1s;
+      box-shadow: 0 4px 0 var(--color-pastel-morado);
     }
     button:hover {
-      background-color: #218838;
+      background-color: #f599c2;
     }
+    button:active {
+      transform: translateY(4px);
+      box-shadow: 0 0px 0 #a289cc;
+    }
+
+    /* ---------------------------------- */
+    /* 5. SECCIÓN DE RESULTADO */
+    /* ---------------------------------- */
     #resultado {
-      margin-top: 25px;
-      padding: 15px;
-      border-radius: 8px;
-      font-size: 1.1em;
+      margin-top: 30px;
+      padding: 20px;
+      border-radius: 10px;
+      font-size: 1.2em;
       font-weight: bold;
-      min-height: 50px; /* Para mantener la altura */
+      min-height: 50px; 
       display: flex;
       align-items: center;
       justify-content: center;
-      text-align: left;
+      text-align: center;
+      line-height: 1.4;
+      border: 2px solid transparent; /* Base */
     }
-    .exito { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-    .alerta { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-    .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-    .loading { opacity: 0.6; pointer-events: none; }
+    /* Estilos dinámicos para el resultado */
+    .exito { background-color: #e6ffed; color: var(--color-exito); border-color: var(--color-exito); }
+    .alerta { background-color: #fff8e1; color: var(--color-alerta); border-color: var(--color-alerta); }
+    .error { background-color: #ffe6e6; color: var(--color-error); border-color: var(--color-error); }
+    .loading { opacity: 0.6; pointer-events: none; color: #555; }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>Verificador de Códigos</h1>
+  <h1>RASCA Y GANA UN IPHONE 17</h1>
   
-  <input type="text" id="codigoInput" placeholder="Introduce tu código (ej. QR00001)" maxlength="10">
-  <button id="botonValidar" onclick="handleValidacion()">VALIDAR CÓDIGO</button>
+  <h2>Introduce el código de tu boleto:</h2>
+  
+  <input type="text" id="codigoInput" placeholder="EJEMPLO: QR00001" maxlength="10">
+  <button id="botonValidar" onclick="handleValidacion()">VERIFICAR PREMIO</button>
   
   <div id="resultado"></div>
 </div>
 
 <script>
-  // Maneja la llamada al Apps Script
+  // Maneja la llamada al Apps Script (Servidor)
   function handleValidacion() {
     const input = document.getElementById('codigoInput');
     const button = document.getElementById('botonValidar');
     const resultadoDiv = document.getElementById('resultado');
     
+    const codigo = input.value;
+    if (!codigo.trim()) {
+        resultadoDiv.className = 'error';
+        resultadoDiv.innerHTML = 'Por favor, introduce un código antes de verificar.';
+        return;
+    }
+    
     // Limpiar resultado anterior y añadir clase de carga
-    resultadoDiv.textContent = 'Verificando...';
+    resultadoDiv.textContent = 'Verificando tu boleto... ⏳';
     resultadoDiv.className = 'loading';
     button.disabled = true;
     
-    const codigo = input.value;
-    
-    // Llamar a la función del lado del servidor (Apps Script)
+    // Llama a la función 'validarCodigo' en el archivo Código.gs
     google.script.run
       .withSuccessHandler(mostrarResultado)
       .withFailureHandler(mostrarError)
@@ -109,8 +188,12 @@
 
     // Quitar clase de carga y habilitar botón
     button.disabled = false;
-    resultadoDiv.className = res.status; // Clase CSS basada en el estado (exito, alerta, error)
-    resultadoDiv.innerHTML = res.mensaje; // El mensaje con el resultado
+    // Asigna la clase CSS basado en el estado (exito, alerta, error)
+    resultadoDiv.className = res.status; 
+    
+    // Mostrar el mensaje
+    let mensajeHTML = res.mensaje.replace(/\\(.?)\\*/g, '<strong>$1</strong>');
+    resultadoDiv.innerHTML = mensajeHTML;
     
     // Limpiar el input si fue exitoso
     if (res.status === 'exito') {
@@ -125,13 +208,14 @@
     
     button.disabled = false;
     resultadoDiv.className = 'error';
-    resultadoDiv.textContent = 'Error interno: No se pudo conectar con el servidor de códigos.';
+    resultadoDiv.textContent = '❌ Error de conexión: No se pudo verificar el código.';
     console.error(error);
   }
 
   // Permite presionar Enter para validar
   document.addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
+      e.preventDefault(); // Evita el envío de formulario por defecto
       handleValidacion();
     }
   });
