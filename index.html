@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <title>Verificador de Códigos Rasca y Gana</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    h1 {
+      color: #007bff;
+      margin-bottom: 25px;
+      font-size: 1.5em;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 1.1em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+    button {
+      background-color: #28a745;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1.1em;
+      width: 100%;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    #resultado {
+      margin-top: 25px;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 1.1em;
+      font-weight: bold;
+      min-height: 50px; /* Para mantener la altura */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: left;
+    }
+    .exito { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .alerta { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+    .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .loading { opacity: 0.6; pointer-events: none; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Verificador de Códigos</h1>
+  
+  <input type="text" id="codigoInput" placeholder="Introduce tu código (ej. QR00001)" maxlength="10">
+  <button id="botonValidar" onclick="handleValidacion()">VALIDAR CÓDIGO</button>
+  
+  <div id="resultado"></div>
+</div>
+
+<script>
+  // Maneja la llamada al Apps Script
+  function handleValidacion() {
+    const input = document.getElementById('codigoInput');
+    const button = document.getElementById('botonValidar');
+    const resultadoDiv = document.getElementById('resultado');
+    
+    // Limpiar resultado anterior y añadir clase de carga
+    resultadoDiv.textContent = 'Verificando...';
+    resultadoDiv.className = 'loading';
+    button.disabled = true;
+    
+    const codigo = input.value;
+    
+    // Llamar a la función del lado del servidor (Apps Script)
+    google.script.run
+      .withSuccessHandler(mostrarResultado)
+      .withFailureHandler(mostrarError)
+      .validarCodigo(codigo);
+  }
+  
+  // Muestra el resultado devuelto por validarCodigo(codigo)
+  function mostrarResultado(res) {
+    const button = document.getElementById('botonValidar');
+    const resultadoDiv = document.getElementById('resultado');
+
+    // Quitar clase de carga y habilitar botón
+    button.disabled = false;
+    resultadoDiv.className = res.status; // Clase CSS basada en el estado (exito, alerta, error)
+    resultadoDiv.innerHTML = res.mensaje; // El mensaje con el resultado
+    
+    // Limpiar el input si fue exitoso
+    if (res.status === 'exito') {
+      document.getElementById('codigoInput').value = '';
+    }
+  }
+  
+  // Muestra un error si la llamada al script falla
+  function mostrarError(error) {
+    const button = document.getElementById('botonValidar');
+    const resultadoDiv = document.getElementById('resultado');
+    
+    button.disabled = false;
+    resultadoDiv.className = 'error';
+    resultadoDiv.textContent = 'Error interno: No se pudo conectar con el servidor de códigos.';
+    console.error(error);
+  }
+
+  // Permite presionar Enter para validar
+  document.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      handleValidacion();
+    }
+  });
+
+</script>
+</body>
+</html>
